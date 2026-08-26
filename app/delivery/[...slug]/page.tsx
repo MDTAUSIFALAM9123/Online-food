@@ -1,0 +1,9 @@
+'use client';
+
+import { useParams } from 'next/navigation';
+import { Banknote, Bike, CheckCircle2, Clock3, MapPin, Package, UserRound } from 'lucide-react';
+import { PanelShell, MetricCard, type PanelNavItem } from '@/components/panels/panel-shell';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
+const nav: PanelNavItem[] = [{ href: '/delivery', label: 'Dashboard', icon: Bike }, { href: '/delivery/orders', label: 'Delivery Requests', icon: Package }, { href: '/delivery/active', label: 'Active Delivery', icon: MapPin }, { href: '/delivery/history', label: 'History', icon: CheckCircle2 }, { href: '/delivery/earnings', label: 'Earnings', icon: Banknote }, { href: '/delivery/profile', label: 'My Profile', icon: UserRound }];
+export default function DeliverySubPage() { const params = useParams(); const slug = Array.isArray(params.slug) ? params.slug.join('/') : String(params.slug ?? 'orders'); const title = slug.split('/').pop()?.replace(/-/g, ' ') ?? 'orders'; return <PanelShell title={title.charAt(0).toUpperCase() + title.slice(1)} subtitle="Manage your delivery partner activity." brand="FoodGo Delivery" navItems={nav} accent="bg-success"><div className="grid gap-4 sm:grid-cols-3"><MetricCard label="Deliveries" value="128" change="This month" icon={Bike} /><MetricCard label="Earnings" value="₹18,420" change="+12.8% this month" icon={Banknote} /><MetricCard label="Rating" value="4.8" change="Excellent" icon={CheckCircle2} /></div><div className="mt-6 rounded-2xl border border-border/60 bg-card p-5"><h2 className="font-display text-xl font-semibold">{title.charAt(0).toUpperCase() + title.slice(1)}</h2><p className="mt-2 text-sm text-muted-foreground">Your {title} will appear here with live updates and clear next actions.</p><Button className="mt-5" onClick={() => toast.success('Latest data refreshed')}>Refresh data</Button></div></PanelShell>; }

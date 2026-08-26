@@ -1,0 +1,19 @@
+'use client';
+
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { Bell, ChevronRight, CircleHelp, LogOut, Menu, Settings, Store, UserRound, X } from 'lucide-react';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+
+export interface PanelNavItem { href: string; label: string; icon: React.ComponentType<{ className?: string }>; }
+interface PanelShellProps { title: string; subtitle: string; navItems: PanelNavItem[]; brand: string; children: React.ReactNode; accent?: string; }
+
+export function PanelShell({ title, subtitle, navItems, brand, children, accent = 'bg-primary' }: PanelShellProps) {
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+  return <div className="min-h-screen bg-muted/30"><aside className={cn('fixed inset-y-0 left-0 z-50 w-72 border-r border-border bg-card p-5 transition-transform lg:translate-x-0', open ? 'translate-x-0' : '-translate-x-full')}><div className="flex items-center justify-between"><Link href="/" className="flex items-center gap-2"><div className={cn('flex h-9 w-9 items-center justify-center rounded-xl text-white', accent)}><span className="font-display font-bold">F</span></div><span className="font-display text-xl font-bold">{brand}</span></Link><button className="lg:hidden" onClick={() => setOpen(false)}><X className="h-5 w-5" /></button></div><div className="mt-8 space-y-1">{navItems.map((item) => { const Icon = item.icon; const active = pathname === item.href || (item.href !== navItems[0].href && pathname.startsWith(item.href)); return <Link key={item.href} href={item.href} onClick={() => setOpen(false)} className={cn('flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors', active ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-accent hover:text-foreground')}><Icon className="h-4 w-4" />{item.label}</Link>; })}</div><div className="absolute bottom-5 left-5 right-5"><Link href="/" className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-muted-foreground hover:bg-accent"><LogOut className="h-4 w-4" /> Back to FoodGo</Link></div></aside><div className="lg:pl-72"><header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-border/60 bg-background/90 px-4 backdrop-blur-xl sm:px-6"><div className="flex items-center gap-3"><Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setOpen(true)}><Menu className="h-5 w-5" /></Button><div><p className="text-xs text-muted-foreground">{brand}</p><h1 className="font-display font-semibold">{title}</h1></div></div><div className="flex items-center gap-2"><Button variant="ghost" size="icon"><Bell className="h-5 w-5" /></Button><div className="hidden items-center gap-2 sm:flex"><div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary"><UserRound className="h-4 w-4" /></div><span className="text-sm font-medium">Admin User</span></div></div></header><main className="p-4 sm:p-6"><p className="mb-6 text-sm text-muted-foreground">{subtitle}</p>{children}</main></div></div>;
+}
+
+export function MetricCard({ label, value, change, icon: Icon }: { label: string; value: string; change: string; icon: React.ComponentType<{ className?: string }> }) { return <div className="rounded-2xl border border-border/60 bg-card p-5 shadow-sm"><div className="flex items-start justify-between"><div><p className="text-sm text-muted-foreground">{label}</p><p className="mt-2 font-display text-2xl font-bold">{value}</p><p className="mt-1 text-xs font-medium text-success">{change}</p></div><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary"><Icon className="h-5 w-5" /></div></div></div>; }
